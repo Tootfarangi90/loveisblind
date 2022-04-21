@@ -2,80 +2,105 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Register() {
-  
+  const [error,setError] = useState()
+  const [firstname, setFirstName] = useState("")
+  const [lastname, setLastName] = useState("")
+  const [password, setPassword] = useState("")
+  const [email,setEmail] = useState("")
+  const [username, setUser] = useState("")
 
-  const [firstname, setFirstname]       = useState('')
-  const [date, setDate]                 = useState('')
-  const [email, setEmail]               = useState('')
-  const [password, setPassword]         = useState('')
-  const [errorFname, setErrorFname]     = useState('')
-  const [errorEmail, setErrorEmail]     = useState('')
-  const [errorPswd, setErrorPswd]       = useState('')
-  const firstnameChanged                = e => setFirstname(e.target.value)
+  const firstnameChanged                = e => setFirstName(e.target.value)
+  const lastnameChanged                 = e => setLastName(e.target.value)
   const passwordChanged                 = e => setPassword(e.target.value)
   const emailChanged                    = e => setEmail(e.target.value)
-  const dateChanged                    = e => setDate(e.target.value)
- 
-  useEffect(()=>{
-  document.title += " | Register"
-  },[])
+  const userChanged                     = e => setUser(e.target.value)
   
-  // const [error, setError] = useState('')
-
-  useEffect(() => {
-    if(firstname.length < 2 ){ 
-      setErrorFname('Firstname is to short')
-      return;
-    }
-     else{
-      setErrorFname('')
-      return;
-    } 
-  }, [firstname])
-  
-  useEffect(() => {
-    if(password.length < 4){
-      setErrorPswd('Password must be atleast 4 characters')
-      return;
-    } 
-    if(password.length > 8){
-      setErrorPswd('Password can\'t be more than 8 characters')
-      return;
-    } else{
-      setErrorPswd('')
-      return;
-    }
-  }, [password])
-
-
-
-  async function registerUser(e) {
+  async function onPost(e){  
     e.preventDefault()
-    const res = await fetch('http://localhost:4000/register', {
+    try{
+      const res = await fetch('http://localhost:4001/register', {
       method: 'POST',
       headers:{
-        'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
       },
+     
       body: JSON.stringify({
         firstname,
+        lastname,
+        username,
         email,
         password
-      })
+      }),
+      
     })
     const data = await res.json()
-  
     
-    console.log(data)
+   
+
+
+    console.log(data.message)
     if(data.status === 409){
-      return setErrorEmail('This user already exists!')
+     
+      setError(data.message)
+      console.log(data)
+      return
     }
     if(data.status === 200) {
-      setErrorEmail('')
+      setError("")
       alert('Welcome!')
       window.location.href='/login'
     }
-        
+    }
+    catch(error)  {
+      console.log(error)
+      
+    }
+    
   }
+  async function onPost1(e){  
+    e.preventDefault()
+    try{
+      const res = await fetch('http://localhost:4001/register', {
+      method: 'POST',
+      headers:{
+      'Content-Type': 'application/json'
+      },
+     
+      body: JSON.stringify({
+        firstname,
+        lastname,
+        username,
+        email,
+        password
+      }),
+      
+    })
+    const data = await res.json()
+    
+   
+
+
+    console.log(data.message)
+    if(data.status === 409){
+     
+      setError(data.message)
+      console.log(data)
+      return
+    }
+    if(data.status === 200) {
+      setError("")
+      alert('Welcome!')
+      window.location.href='/login'
+    }
+    }
+    catch(error)  {
+      console.log(error)
+      
+    }
+    
+  }
+
+  
   
   return (
 
@@ -83,54 +108,50 @@ export default function Register() {
     <div className='form-wrapper'>
       <div id='form-container'>
     <h1>Register</h1>
-      <form onSubmit={registerUser}>
-            <input 
-                
-                type      ="text"
-                id        ="firstname"
-                name      ="firstname"
-                placeholder='First Name'
-                value     ={firstname}
-                pattern   ='.{3,}'
-                onChange  ={firstnameChanged}
-                
-        />
-      <br></br> <small htmlFor="firstname" className='err-msg'><em>{errorFname}</em></small><br></br> 
-                  
-            <input
-                type        ="email"
-                id          ="email"
-                name        ="email"
-                placeholder ='Email'
-                value       ={email.toLowerCase()}
-                pattern     ="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                onChange    ={emailChanged}
-                /> 
-                <br></br> <small htmlFor="email" className='err-msg'><em>{errorEmail}</em></small><br></br>    
-     
-            <input 
-                type        ="password"
-                id          ="password"
-                name        ="password"
-                placeholder ='Password'
-                value       ={password}
-                pattern     =".{4,}"
-                onChange    ={passwordChanged}
-            /> <br></br> <small htmlFor="password" className='err-msg'><em>{errorPswd}</em></small><br></br> 
-                       
-                        <input
-                type        ="date"
-                id          ="date"
-                name        ="date"
-                placeholder ='Date'
-                value       ={date}
-                pattern     ="\d{1,2}/\d{1,2}/\d{4}"
-                onChange    ={dateChanged}
-                /> 
+    <form onSubmit={onPost1}>
 
-        <input type="submit" id="submitbtn" value="Register"/>
-      </form> 
-      <p><i>Already have an account?</i></p><Link to="/login"><em className='emLink'>Login</em></Link>
+<input 
+type="text" 
+name= "firstname" 
+value={firstname}
+placeholder="First Name"
+onChange={firstnameChanged}
+
+/>
+
+<input type="text" 
+name= "lastname" 
+value = {lastname}
+required= {true} 
+placeholder="Last Name" 
+onChange={lastnameChanged}/> 
+
+<input type="text" 
+name= "username" 
+required= {true} 
+value = {username}
+placeholder="Username"
+onChange={userChanged}/>
+
+<input type="email" 
+name= "email" 
+value={email}
+onChange={emailChanged}
+placeholder="Email"
+
+/>
+
+<input type="password" 
+name= "password" 
+required= {true} 
+value ={password}
+onChange={passwordChanged}
+placeholder="Password"/>
+{/* <Input type="password" name= "password2" placeholder="Confirm Password"/> */}
+{/* <Agreement>By creating an account, I consent to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement> */}
+<button>Create</button>
+</form>
+<p>{error}</p>
       </div>
       </div>
       

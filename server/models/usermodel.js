@@ -1,36 +1,45 @@
 const mongoose = require('mongoose')
 
 const User = new mongoose.Schema({
-  firstname: { 
+    firstname: { 
+        type: String, 
+        required: true,
+        message: 'Firstname is requiered',
+       },
+    lastname: { 
+        type: String, 
+        required: true,
+        message: 'Lastname is required'
+    },
+    email: {
+      type: String, 
+      required: true, 
+      unique: true,
+      dropDups: true,
+      message: 'Email is requiered' 
+    },
+    username: {
       type: String,
       required: true,
-      message: 'Firstname is requiered' 
+      unique: true,
+      dropDups: true,
+      message: 'Username is required'
     },
-    age: {
-        type: Number,
+    password: { 
+        type: String, 
         required: true,
-    },
-  email: { 
-      type: String,
-      required: true, 
-      match: /.+\@.+\..+/, 
-      unique: true, 
-      message: 'Email already exists, please login' 
-    },
-  password: { 
-      type: String, required: true, message: 'Password is requiered' },  
-  token: { 
-      type: String 
-    },
-    interests: {
-      type: String
+        message: 'Password is requiered',
+      },
+      interests:[],
+      age:{ type: Number},
+      date:{
+        type: Date,
+        default: Date.now().toString()
+      },
 
     },
+      {timestamps: true},{collection: 'users'});
 
-  date: { type: Date, default: Date.now }
-}, {collection: 'users'});
-
-const model = mongoose.model('UserData', User);
-
-module.exports = model
-
+  const userModule = mongoose.model('users', User);
+  
+  module.exports = userModule
