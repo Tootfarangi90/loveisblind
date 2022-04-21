@@ -28,7 +28,7 @@ import Register from './Screens/Register';
 function App() {
   
     return (
-<div className="Apppp">
+<div className="App">
       <Router>
         <Header/>
   
